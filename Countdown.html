@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Time Difference Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            text-align: center;
+        }
+        .container input {
+            margin: 5px 0;
+        }
+        .container label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+        .result {
+            margin-top: 20px;
+            font-size: 24px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <label for="start-now">
+            <input type="checkbox" id="start-now" checked> Use current time as start date
+        </label>
+
+        <label for="start-time">Or select start date/time:</label>
+        <input type="datetime-local" id="start-time" disabled>
+
+        <label for="end-time">Select end date/time:</label>
+        <input type="datetime-local" id="end-time">
+
+        <button onclick="calculateDifference()">Calculate Time Difference</button>
+
+        <div class="result">
+            <p id="time-difference"></p>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById("start-now").addEventListener("change", function() {
+            const startTimeInput = document.getElementById("start-time");
+            startTimeInput.disabled = this.checked;
+        });
+
+        function calculateDifference() {
+            let startTime;
+            if (document.getElementById("start-now").checked) {
+                startTime = new Date().getTime();
+            } else {
+                startTime = new Date(document.getElementById("start-time").value).getTime();
+            }
+
+            const endTime = new Date(document.getElementById("end-time").value).getTime();
+            const difference = endTime - startTime;
+
+            if (isNaN(startTime) || isNaN(endTime)) {
+                document.getElementById("time-difference").innerHTML = "Please select valid dates.";
+                return;
+            }
+
+            if (difference < 0) {
+                document.getElementById("time-difference").innerHTML = "The end date must be after the start date.";
+                return;
+            }
+
+            const hours = Math.floor(difference / (1000 * 60 * 60));
+            const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+            document.getElementById("time-difference").innerHTML = 
+                `${hours} hours, ${minutes} minutes, ${seconds} seconds`;
+        }
+    </script>
+</body>
+</html>
